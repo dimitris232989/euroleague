@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Barcelona abstract crest">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#A50044"/>
+      <stop offset="100%" stop-color="#004D98"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="34" fill="#08111a"/>
+  <rect x="14" y="14" width="132" height="132" rx="28" fill="url(#bg)"/>
+  <path d="M38 40h84v16H38zm0 26h84v10H38zm0 28h84v10H38z" fill="rgba(255,255,255,.18)"/>
+  <circle cx="80" cy="102" r="30" fill="#08111a" fill-opacity=".9" stroke="#F9E2B5" stroke-width="4"/>
+  <text x="80" y="111" text-anchor="middle" font-family="Georgia, serif" font-size="28" font-weight="700" fill="#F9E2B5">BAR</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Olympiacos abstract crest">
+  <rect width="160" height="160" rx="34" fill="#08111a"/>
+  <rect x="14" y="14" width="132" height="132" rx="28" fill="#D71920"/>
+  <circle cx="80" cy="80" r="44" fill="none" stroke="#FFFFFF" stroke-width="10" opacity=".86"/>
+  <circle cx="80" cy="80" r="28" fill="#08111a" fill-opacity=".9"/>
+  <path d="M58 112c8-10 18-14 22-14s14 4 22 14" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity=".85"/>
+  <text x="80" y="88" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="700" fill="#FFFFFF">OLY</text>
+</svg>

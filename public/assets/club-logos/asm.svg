@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Monaco abstract crest">
+  <rect width="160" height="160" rx="34" fill="#08111a"/>
+  <rect x="14" y="14" width="132" height="132" rx="28" fill="#B61E2E"/>
+  <path d="M44 34h72l-12 34H56z" fill="#FFFFFF" opacity=".86"/>
+  <path d="M56 68h48l-8 52H64z" fill="#FFFFFF" opacity=".64"/>
+  <text x="80" y="95" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="700" fill="#B61E2E">ASM</text>
+</svg>

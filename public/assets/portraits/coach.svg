@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 144" role="img" aria-label="Coach portrait placeholder">
+  <rect width="120" height="144" rx="24" fill="#0B1420"/>
+  <circle cx="60" cy="42" r="22" fill="#E3CFBA"/>
+  <path d="M24 126c8-28 22-42 36-42s28 14 36 42" fill="#394B63"/>
+  <path d="M34 86c8 6 16 8 26 8s18-2 26-8" fill="none" stroke="#E3CFBA" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+  <text x="60" y="132" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#E3CFBA">HC</text>
+</svg>

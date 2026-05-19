@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Zalgiris abstract crest">
+  <rect width="160" height="160" rx="34" fill="#08111a"/>
+  <rect x="14" y="14" width="132" height="132" rx="28" fill="#006B3F"/>
+  <path d="M28 54h104M28 80h104M28 106h104" stroke="#FFFFFF" stroke-width="10" opacity=".18"/>
+  <circle cx="80" cy="80" r="32" fill="#08111a" fill-opacity=".88" stroke="#FFFFFF" stroke-width="4"/>
+  <text x="80" y="89" text-anchor="middle" font-family="Georgia, serif" font-size="24" font-weight="700" fill="#FFFFFF">ZAL</text>
+</svg>

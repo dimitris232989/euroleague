@@ -1,0 +1,7 @@
+.git
+.gitignore
+.venv
+data/*.sqlite
+data/*.sqlite-journal
+ch3.pptx
+Project_Description (3).pdf

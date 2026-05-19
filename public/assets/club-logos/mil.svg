@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Milano abstract crest">
+  <rect width="160" height="160" rx="34" fill="#08111a"/>
+  <rect x="14" y="14" width="132" height="132" rx="28" fill="#111111" stroke="#C8102E" stroke-width="8"/>
+  <path d="M40 42h80M40 62h80M40 82h80M40 102h80" stroke="#C8102E" stroke-width="6" opacity=".72"/>
+  <text x="80" y="92" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-weight="700" fill="#FFFFFF">MIL</text>
+</svg>

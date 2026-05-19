@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="Maccabi abstract crest">
+  <rect width="160" height="160" rx="34" fill="#08111a"/>
+  <rect x="14" y="14" width="132" height="132" rx="28" fill="#0057B8"/>
+  <path d="M80 28l14 28 30 4-22 20 6 30-28-14-28 14 6-30-22-20 30-4z" fill="#FFD100" opacity=".92"/>
+  <text x="80" y="132" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#FFD100">MAC</text>
+</svg>

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 144" role="img" aria-label="Big portrait placeholder">
+  <rect width="120" height="144" rx="24" fill="#0B1420"/>
+  <circle cx="60" cy="42" r="22" fill="#E8C8A8"/>
+  <path d="M18 126c8-30 24-42 42-42s34 12 42 42" fill="#556B7A"/>
+  <path d="M44 90h32" stroke="#E8C8A8" stroke-width="6" stroke-linecap="round" opacity=".42"/>
+  <text x="60" y="132" text-anchor="middle" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#E8C8A8">C</text>
+</svg>
