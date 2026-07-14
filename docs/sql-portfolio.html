@@ -1,0 +1,996 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dimitris Angelopoulos - SQL Portfolio</title>
+<meta name="description" content="Euroleague Atlas: a 19-table normalized MySQL schema and 15 advanced SQL queries, by Dimitris Angelopoulos.">
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --bg-elevated: #ffffff;
+    --text: #1c1c1e;
+    --text-muted: #55555a;
+    --border: #e2e1dd;
+    --accent: #9c3b3b;
+    --accent-soft: #f1e3e0;
+    --code-bg: #1e1e1e;
+    --code-text: #e6e6e6;
+    --code-comment: #8a8a8a;
+    --code-keyword: #d19a66;
+    --pill-bg: #efe9e2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15151a;
+      --bg-elevated: #1d1d23;
+      --text: #ecebe8;
+      --text-muted: #a6a5a1;
+      --border: #302f36;
+      --accent: #e0897e;
+      --accent-soft: #3a2626;
+      --code-bg: #131316;
+      --code-text: #e6e6e6;
+      --code-comment: #8a8a8a;
+      --code-keyword: #e0a874;
+      --pill-bg: #26252b;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px 96px; }
+  header.hero {
+    padding: 72px 24px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  header.hero .wrap { padding: 0; }
+  h1 { font-size: 2rem; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .role { color: var(--text-muted); font-size: 1.05rem; margin: 0 0 20px; }
+  .lede { max-width: 640px; color: var(--text-muted); margin: 0 0 24px; }
+  .links { display: flex; gap: 10px; flex-wrap: wrap; }
+  .links a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+  }
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
+  .stats { display: flex; gap: 28px; margin-top: 32px; flex-wrap: wrap; }
+  .stat .n { font-size: 1.6rem; font-weight: 600; }
+  .stat .l { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+  h2 { font-size: 1.4rem; margin: 0 0 8px; }
+  .section-intro { color: var(--text-muted); max-width: 680px; margin: 0 0 28px; }
+  .group-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 8px; }
+  .group-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .group-card h3 { margin: 0 0 8px; font-size: 0.95rem; }
+  .group-card ul { margin: 0; padding-left: 18px; color: var(--text-muted); font-size: 0.88rem; }
+  .group-card ul li { margin: 2px 0; }
+  details {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  details summary {
+    cursor: pointer;
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after {
+    content: "+";
+    color: var(--text-muted);
+    font-weight: 400;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  details[open] summary::after { content: "\2212"; }
+  details summary .tag {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+  .q-body { padding: 0 18px 18px; }
+  .q-explain { color: var(--text-muted); font-size: 0.9rem; margin: 12px 0 0; }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 16px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    margin: 0;
+  }
+  code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+  .pill { display: inline-block; background: var(--pill-bg); color: var(--text-muted); font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; margin: 0 6px 6px 0; }
+  footer { padding: 40px 0 60px; text-align: center; color: var(--text-muted); font-size: 0.85rem; }
+  .toc { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.85rem; margin-top: 24px; }
+  .toc a { text-decoration: none; color: var(--text-muted); }
+  .toc a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Dimitris Angelopoulos</h1>
+    <p class="role">SQL &amp; Relational Database Design &mdash; SQL Portfolio</p>
+    <p class="lede">This page is the SQL deep-dive behind <strong>Euroleague Atlas</strong>, a PHP/MySQL sports archive I built end-to-end: a normalized 19-table schema, ten seasons of seeded data, and 15 advanced queries covering joins, subqueries, aggregation, and HAVING logic.</p>
+    <div class="links">
+      <a href="https://github.com/dimitris232989/euroleague" target="_blank" rel="noopener">GitHub Repository</a>
+      <a href="#schema">Schema</a>
+      <a href="#queries">15 Queries</a>
+      <a href="#data">Sample Data</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="n">19</div><div class="l">Tables</div></div>
+      <div class="stat"><div class="n">15</div><div class="l">Advanced queries</div></div>
+      <div class="stat"><div class="n">10</div><div class="l">Seasons seeded</div></div>
+      <div class="stat"><div class="n">4</div><div class="l">Composite-key tables</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="overview">
+  <h2>What this project demonstrates</h2>
+  <p class="section-intro">Euroleague Atlas models ten seasons of EuroLeague basketball &mdash; teams, rosters, games, box scores, awards, and a daily grid puzzle &mdash; behind a browser-based CRUD app. Every table below is enforced with primary keys, foreign keys, and CHECK constraints; every query is written by hand against that schema, not generated from an ORM.</p>
+  <span class="pill">Normalization to 3NF</span>
+  <span class="pill">Composite primary keys</span>
+  <span class="pill">Foreign key constraints</span>
+  <span class="pill">CHECK constraints</span>
+  <span class="pill">INNER / LEFT / RIGHT JOIN</span>
+  <span class="pill">Correlated &amp; nested subqueries</span>
+  <span class="pill">GROUP BY / HAVING</span>
+  <span class="pill">Aggregate functions</span>
+</section>
+
+<section id="schema">
+  <h2>Schema &mdash; 19 tables in 5 groups</h2>
+  <p class="section-intro">The schema separates people (with role subtypes for players/coaches/referees), geography, the season/roster structure, per-game statistics, and a self-contained grid-puzzle mini-game. Click a group to expand the full <code>CREATE TABLE</code> DDL.</p>
+
+  <div class="group-grid">
+    <div class="group-card">
+      <h3>People &amp; Roles</h3>
+      <ul><li>people</li><li>players</li><li>coaches</li><li>referees</li></ul>
+    </div>
+    <div class="group-card">
+      <h3>Geography &amp; Venues</h3>
+      <ul><li>countries</li><li>arenas</li></ul>
+    </div>
+    <div class="group-card">
+      <h3>Competition Structure</h3>
+      <ul><li>seasons</li><li>teams</li><li>team_seasons</li><li>roster_assignments</li></ul>
+    </div>
+    <div class="group-card">
+      <h3>Game Data</h3>
+      <ul><li>games</li><li>team_game_stats</li><li>player_game_stats</li><li>awards</li></ul>
+    </div>
+    <div class="group-card">
+      <h3>Grid Puzzle</h3>
+      <ul><li>grid_puzzles</li><li>grid_puzzle_rows</li><li>grid_puzzle_columns</li><li>grid_puzzle_cells</li><li>grid_puzzle_answers</li></ul>
+    </div>
+  </div>
+
+  <details>
+    <summary>People &amp; Roles <span class="tag">people &middot; players &middot; coaches &middot; referees</span></summary>
+    <div class="q-body">
+<pre><code>CREATE TABLE people (
+    person_id INTEGER NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    date_of_birth DATE,
+    nationality VARCHAR(100),
+    photo_url VARCHAR(255),
+    PRIMARY KEY (person_id)
+);
+
+CREATE TABLE players (
+    person_id INTEGER NOT NULL,
+    position VARCHAR(30),
+    height DECIMAL(5,2),
+    weight DECIMAL(6,2),
+    PRIMARY KEY (person_id),
+    FOREIGN KEY (person_id) REFERENCES people(person_id)
+);
+
+CREATE TABLE coaches (
+    person_id INTEGER NOT NULL,
+    experience_years SMALLINT,
+    coaching_role VARCHAR(50),
+    PRIMARY KEY (person_id),
+    FOREIGN KEY (person_id) REFERENCES people(person_id)
+);
+
+CREATE TABLE referees (
+    person_id INTEGER NOT NULL,
+    license_level VARCHAR(50),
+    active_since DATE,
+    federation VARCHAR(100),
+    current_flag BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (person_id),
+    FOREIGN KEY (person_id) REFERENCES people(person_id)
+);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Geography &amp; Venues <span class="tag">countries &middot; arenas</span></summary>
+    <div class="q-body">
+<pre><code>CREATE TABLE countries (
+    country_id INTEGER NOT NULL,
+    country_name VARCHAR(100) NOT NULL,
+    country_code VARCHAR(3) NOT NULL,
+    continent VARCHAR(50),
+    PRIMARY KEY (country_id),
+    UNIQUE (country_code)
+);
+
+CREATE TABLE arenas (
+    arena_id INTEGER NOT NULL,
+    arena_name VARCHAR(120) NOT NULL,
+    city VARCHAR(100),
+    capacity INTEGER,
+    website_url VARCHAR(255),
+    country_id INTEGER NOT NULL,
+    PRIMARY KEY (arena_id),
+    FOREIGN KEY (country_id) REFERENCES countries(country_id),
+    CHECK (capacity IS NULL OR capacity &gt;= 0)
+);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Competition Structure <span class="tag">seasons &middot; teams &middot; team_seasons &middot; roster_assignments</span></summary>
+    <div class="q-body">
+<pre><code>CREATE TABLE seasons (
+    season_id INTEGER NOT NULL,
+    season_label VARCHAR(30) NOT NULL,
+    start_date DATE,
+    end_date DATE,
+    competition_name VARCHAR(100) NOT NULL,
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (season_id),
+    UNIQUE (season_label)
+);
+
+CREATE TABLE teams (
+    team_id INTEGER NOT NULL,
+    country_id INTEGER NOT NULL,
+    home_arena_id INTEGER,
+    team_name VARCHAR(120) NOT NULL,
+    short_name VARCHAR(50),
+    nickname VARCHAR(80),
+    founded_year SMALLINT,
+    primary_color VARCHAR(20),
+    secondary_color VARCHAR(20),
+    logo_url VARCHAR(255),
+    website_url VARCHAR(255),
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (team_id),
+    FOREIGN KEY (country_id) REFERENCES countries(country_id),
+    FOREIGN KEY (home_arena_id) REFERENCES arenas(arena_id)
+);
+
+CREATE TABLE team_seasons (
+    team_id INTEGER NOT NULL,
+    season_id INTEGER NOT NULL,
+    coach_person_id INTEGER,
+    wins SMALLINT NOT NULL DEFAULT 0,
+    losses SMALLINT NOT NULL DEFAULT 0,
+    points_for INTEGER NOT NULL DEFAULT 0,
+    points_against INTEGER NOT NULL DEFAULT 0,
+    point_diff INTEGER NOT NULL DEFAULT 0,
+    final_rank SMALLINT,
+    playoff_seed SMALLINT,
+    qualified_playin BOOLEAN NOT NULL DEFAULT FALSE,
+    qualified_playoffs BOOLEAN NOT NULL DEFAULT FALSE,
+    final_four_flag BOOLEAN NOT NULL DEFAULT FALSE,
+    avg_attendance INTEGER,
+    notes TEXT,
+    PRIMARY KEY (team_id, season_id),
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (season_id) REFERENCES seasons(season_id),
+    FOREIGN KEY (coach_person_id) REFERENCES coaches(person_id),
+    CHECK (wins &gt;= 0),
+    CHECK (losses &gt;= 0),
+    CHECK (avg_attendance IS NULL OR avg_attendance &gt;= 0)
+);
+
+CREATE TABLE roster_assignments (
+    team_id INTEGER NOT NULL,
+    season_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    jersey_number SMALLINT,
+    role VARCHAR(50),
+    start_date DATE,
+    end_date DATE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (team_id, season_id, person_id),
+    FOREIGN KEY (team_id, season_id) REFERENCES team_seasons(team_id, season_id),
+    FOREIGN KEY (person_id) REFERENCES players(person_id),
+    CHECK (jersey_number IS NULL OR jersey_number &gt;= 0)
+);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Game Data <span class="tag">games &middot; team_game_stats &middot; player_game_stats &middot; awards</span></summary>
+    <div class="q-body">
+<pre><code>CREATE TABLE games (
+    game_id INTEGER NOT NULL,
+    season_id INTEGER NOT NULL,
+    home_team_id INTEGER NOT NULL,
+    away_team_id INTEGER NOT NULL,
+    referee_id INTEGER,
+    arena_id INTEGER,
+    game_date DATE NOT NULL,
+    tipoff_time TIME,
+    status VARCHAR(30),
+    home_score SMALLINT,
+    away_score SMALLINT,
+    attendance INTEGER,
+    overtime_count SMALLINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (game_id),
+    FOREIGN KEY (season_id) REFERENCES seasons(season_id),
+    FOREIGN KEY (home_team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (away_team_id) REFERENCES teams(team_id),
+    FOREIGN KEY (referee_id) REFERENCES referees(person_id),
+    FOREIGN KEY (arena_id) REFERENCES arenas(arena_id),
+    CHECK (home_team_id &lt;&gt; away_team_id),
+    CHECK (attendance IS NULL OR attendance &gt;= 0),
+    CHECK (overtime_count &gt;= 0)
+);
+
+CREATE TABLE team_game_stats (
+    game_id INTEGER NOT NULL,
+    team_id INTEGER NOT NULL,
+    points SMALLINT NOT NULL DEFAULT 0,
+    rebounds SMALLINT NOT NULL DEFAULT 0,
+    assists SMALLINT NOT NULL DEFAULT 0,
+    turnovers SMALLINT NOT NULL DEFAULT 0,
+    fouls SMALLINT NOT NULL DEFAULT 0,
+    field_goals_made SMALLINT NOT NULL DEFAULT 0,
+    field_goals_attempted SMALLINT NOT NULL DEFAULT 0,
+    three_points_made SMALLINT NOT NULL DEFAULT 0,
+    three_points_attempted SMALLINT NOT NULL DEFAULT 0,
+    free_throws_made SMALLINT NOT NULL DEFAULT 0,
+    free_throws_attempted SMALLINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (game_id, team_id),
+    FOREIGN KEY (game_id) REFERENCES games(game_id),
+    FOREIGN KEY (team_id) REFERENCES teams(team_id)
+);
+
+CREATE TABLE player_game_stats (
+    game_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    points SMALLINT NOT NULL DEFAULT 0,
+    rebounds SMALLINT NOT NULL DEFAULT 0,
+    assists SMALLINT NOT NULL DEFAULT 0,
+    turnovers SMALLINT NOT NULL DEFAULT 0,
+    fouls SMALLINT NOT NULL DEFAULT 0,
+    field_goals_made SMALLINT NOT NULL DEFAULT 0,
+    field_goals_attempted SMALLINT NOT NULL DEFAULT 0,
+    three_points_made SMALLINT NOT NULL DEFAULT 0,
+    three_points_attempted SMALLINT NOT NULL DEFAULT 0,
+    free_throws_made SMALLINT NOT NULL DEFAULT 0,
+    free_throws_attempted SMALLINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (game_id, person_id),
+    FOREIGN KEY (game_id) REFERENCES games(game_id),
+    FOREIGN KEY (person_id) REFERENCES players(person_id)
+);
+
+CREATE TABLE awards (
+    award_id INTEGER NOT NULL,
+    season_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    award_name VARCHAR(120) NOT NULL,
+    award_type VARCHAR(50),
+    notes TEXT,
+    PRIMARY KEY (award_id),
+    FOREIGN KEY (season_id) REFERENCES seasons(season_id),
+    FOREIGN KEY (person_id) REFERENCES people(person_id)
+);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Grid Puzzle <span class="tag">grid_puzzles &middot; rows &middot; columns &middot; cells &middot; answers</span></summary>
+    <div class="q-body">
+<pre><code>CREATE TABLE grid_puzzles (
+    grid_puzzle_id INTEGER NOT NULL,
+    season_id INTEGER NOT NULL,
+    puzzle_name VARCHAR(120) NOT NULL,
+    puzzle_date DATE,
+    status VARCHAR(30),
+    PRIMARY KEY (grid_puzzle_id),
+    FOREIGN KEY (season_id) REFERENCES seasons(season_id)
+);
+
+CREATE TABLE grid_puzzle_rows (
+    grid_puzzle_id INTEGER NOT NULL,
+    row_position SMALLINT NOT NULL,
+    team_id INTEGER NOT NULL,
+    clue_text VARCHAR(255),
+    PRIMARY KEY (grid_puzzle_id, row_position),
+    FOREIGN KEY (grid_puzzle_id) REFERENCES grid_puzzles(grid_puzzle_id),
+    FOREIGN KEY (team_id) REFERENCES teams(team_id),
+    CHECK (row_position &gt;= 1)
+);
+
+CREATE TABLE grid_puzzle_columns (
+    grid_puzzle_id INTEGER NOT NULL,
+    column_position SMALLINT NOT NULL,
+    stat_name VARCHAR(80) NOT NULL,
+    comparison_operator VARCHAR(4) NOT NULL,
+    target_value DECIMAL(10,2),
+    units VARCHAR(20),
+    clue_text VARCHAR(255),
+    PRIMARY KEY (grid_puzzle_id, column_position),
+    FOREIGN KEY (grid_puzzle_id) REFERENCES grid_puzzles(grid_puzzle_id),
+    CHECK (column_position &gt;= 1),
+    CHECK (comparison_operator IN ('&gt;', '&gt;=', '=', '&lt;=', '&lt;', '&lt;&gt;'))
+);
+
+CREATE TABLE grid_puzzle_cells (
+    grid_puzzle_id INTEGER NOT NULL,
+    row_position SMALLINT NOT NULL,
+    column_position SMALLINT NOT NULL,
+    cell_value VARCHAR(100),
+    notes TEXT,
+    PRIMARY KEY (grid_puzzle_id, row_position, column_position),
+    FOREIGN KEY (grid_puzzle_id, row_position)
+        REFERENCES grid_puzzle_rows(grid_puzzle_id, row_position),
+    FOREIGN KEY (grid_puzzle_id, column_position)
+        REFERENCES grid_puzzle_columns(grid_puzzle_id, column_position)
+);
+
+CREATE TABLE grid_puzzle_answers (
+    grid_puzzle_id INTEGER NOT NULL,
+    row_position SMALLINT NOT NULL,
+    column_position SMALLINT NOT NULL,
+    person_id INTEGER NOT NULL,
+    is_primary BOOLEAN NOT NULL DEFAULT FALSE,
+    notes TEXT,
+    PRIMARY KEY (grid_puzzle_id, row_position, column_position, person_id),
+    FOREIGN KEY (grid_puzzle_id, row_position, column_position)
+        REFERENCES grid_puzzle_cells(grid_puzzle_id, row_position, column_position),
+    FOREIGN KEY (person_id) REFERENCES players(person_id)
+);</code></pre>
+    </div>
+  </details>
+</section>
+
+<section id="queries">
+  <h2>15 Advanced SQL Queries</h2>
+  <p class="section-intro">Each query runs against the schema above and backs a real page in the app (standings, stats leaders, awards, head-to-head, the grid puzzle). Together they cover every join type, correlated and nested subqueries, GROUP BY / HAVING, and aggregate functions. Expand any query to see the SQL and what it proves.</p>
+
+  <details>
+    <summary>1. Season standings with club and venue context <span class="tag">INNER + LEFT JOIN</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    s.season_label,
+    ts.final_rank,
+    t.team_name,
+    c.country_name,
+    a.arena_name,
+    ts.wins,
+    ts.losses,
+    ROUND(ts.wins / NULLIF(ts.wins + ts.losses, 0), 3) AS win_pct,
+    ts.point_diff
+FROM team_seasons ts
+INNER JOIN seasons s ON s.season_id = ts.season_id
+INNER JOIN teams t ON t.team_id = ts.team_id
+INNER JOIN countries c ON c.country_id = t.country_id
+LEFT JOIN arenas a ON a.arena_id = t.home_arena_id
+ORDER BY s.season_id DESC, ts.final_rank ASC, t.team_name ASC;</code></pre>
+      <p class="q-explain">Full standings table joining five entities in one pass; powers the public standings pages.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>2. Countries averaging 10,000+ fans per game <span class="tag">LEFT JOIN &middot; GROUP BY &middot; HAVING</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    c.country_name,
+    COUNT(DISTINCT t.team_id) AS clubs,
+    ROUND(AVG(ts.avg_attendance), 0) AS avg_attendance,
+    ROUND(AVG(ts.wins), 1) AS avg_wins
+FROM countries c
+LEFT JOIN teams t ON t.country_id = c.country_id
+LEFT JOIN team_seasons ts ON ts.team_id = t.team_id
+GROUP BY c.country_id, c.country_name
+HAVING AVG(ts.avg_attendance) &gt;= 10000
+ORDER BY avg_attendance DESC, clubs DESC;</code></pre>
+      <p class="q-explain">Uses LEFT JOIN, GROUP BY, HAVING, COUNT and AVG to rank the strongest attendance environments by country.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>3. Players averaging 15+ PPG with minimum volume <span class="tag">4-table JOIN &middot; HAVING</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    s.season_label,
+    p.first_name,
+    p.last_name,
+    t.team_name,
+    ROUND(AVG(pgs.points), 1) AS ppg,
+    COUNT(*) AS games_played
+FROM player_game_stats pgs
+INNER JOIN games g ON g.game_id = pgs.game_id
+INNER JOIN seasons s ON s.season_id = g.season_id
+INNER JOIN people p ON p.person_id = pgs.person_id
+INNER JOIN roster_assignments ra ON ra.person_id = pgs.person_id AND ra.season_id = g.season_id
+INNER JOIN teams t ON t.team_id = ra.team_id
+GROUP BY s.season_id, s.season_label, p.person_id, p.first_name, p.last_name, t.team_name
+HAVING COUNT(*) &gt;= 20 AND AVG(pgs.points) &gt;= 15
+ORDER BY s.season_id DESC, ppg DESC, p.last_name ASC;</code></pre>
+      <p class="q-explain">Identifies high-volume, high-efficiency scorers by requiring a minimum sample size alongside the scoring threshold.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>4. Every season and its MVP winner <span class="tag">RIGHT JOIN</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    s.season_label,
+    COALESCE(CONCAT(p.first_name, ' ', p.last_name), 'No MVP assigned') AS mvp_winner,
+    t.team_name
+FROM awards a
+RIGHT JOIN seasons s ON s.season_id = a.season_id AND a.award_name = 'MVP'
+LEFT JOIN people p ON p.person_id = a.person_id
+LEFT JOIN roster_assignments ra ON ra.person_id = a.person_id AND ra.season_id = s.season_id
+LEFT JOIN teams t ON t.team_id = ra.team_id
+ORDER BY s.season_id DESC;</code></pre>
+      <p class="q-explain">RIGHT JOIN anchored on seasons guarantees every season appears even if no MVP has been assigned yet.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>5. Distinct countries reaching the Final Four <span class="tag">DISTINCT</span></summary>
+    <div class="q-body">
+<pre><code>SELECT DISTINCT
+    s.season_label,
+    c.country_name
+FROM team_seasons ts
+INNER JOIN seasons s ON s.season_id = ts.season_id
+INNER JOIN teams t ON t.team_id = ts.team_id
+INNER JOIN countries c ON c.country_id = t.country_id
+WHERE ts.final_four_flag = 1
+ORDER BY s.season_id DESC, c.country_name ASC;</code></pre>
+      <p class="q-explain">DISTINCT collapses multiple clubs from the same country into one row per season/country pairing.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>6. Arenas hosting 20+ games <span class="tag">LEFT JOIN &middot; HAVING &middot; MAX</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    a.arena_name,
+    a.city,
+    COUNT(g.game_id) AS games_hosted,
+    ROUND(AVG(g.attendance), 0) AS avg_attendance,
+    MAX(g.attendance) AS peak_attendance
+FROM arenas a
+LEFT JOIN games g ON g.arena_id = a.arena_id
+LEFT JOIN teams t ON t.home_arena_id = a.arena_id
+GROUP BY a.arena_id, a.arena_name, a.city
+HAVING COUNT(g.game_id) &gt;= 20
+ORDER BY games_hosted DESC, avg_attendance DESC;</code></pre>
+      <p class="q-explain">Shows venue usage and crowd strength while keeping arenas with partial game history in scope via LEFT JOIN.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>7. Head-to-head record by club pairing <span class="tag">CASE &middot; SUM &middot; 3-table JOIN</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    s.season_label,
+    ht.team_name AS team_a,
+    at.team_name AS team_b,
+    SUM(CASE WHEN g.home_team_id = ht.team_id AND g.home_score &gt; g.away_score THEN 1
+             WHEN g.away_team_id = ht.team_id AND g.away_score &gt; g.home_score THEN 1
+             ELSE 0 END) AS team_a_wins,
+    SUM(CASE WHEN g.home_team_id = at.team_id AND g.home_score &gt; g.away_score THEN 1
+             WHEN g.away_team_id = at.team_id AND g.away_score &gt; g.home_score THEN 1
+             ELSE 0 END) AS team_b_wins,
+    COUNT(*) AS total_games
+FROM games g
+INNER JOIN seasons s ON s.season_id = g.season_id
+INNER JOIN teams ht ON ht.team_id = g.home_team_id
+INNER JOIN teams at ON at.team_id = g.away_team_id
+GROUP BY s.season_id, s.season_label, ht.team_id, ht.team_name, at.team_id, at.team_name
+HAVING COUNT(*) &gt;= 2
+ORDER BY s.season_id DESC, total_games DESC, team_a ASC;</code></pre>
+      <p class="q-explain">Uses conditional aggregation (CASE inside SUM) to compute wins per side of a rivalry across seasons.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>8. Award totals by player and club <span class="tag">MIN/MAX &middot; HAVING</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    CONCAT(p.first_name, ' ', p.last_name) AS player_name,
+    t.team_name,
+    COUNT(a.award_id) AS awards_won,
+    MIN(s.season_label) AS first_award_season,
+    MAX(s.season_label) AS latest_award_season
+FROM awards a
+INNER JOIN people p ON p.person_id = a.person_id
+INNER JOIN seasons s ON s.season_id = a.season_id
+LEFT JOIN roster_assignments ra ON ra.person_id = a.person_id AND ra.season_id = a.season_id
+LEFT JOIN teams t ON t.team_id = ra.team_id
+GROUP BY p.person_id, p.first_name, p.last_name, t.team_name
+HAVING COUNT(a.award_id) &gt;= 2
+ORDER BY awards_won DESC, player_name ASC;</code></pre>
+      <p class="q-explain">Summarizes repeat award winners and the first/latest season each award was earned.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>9. Top scorer in every season <span class="tag">Nested subquery</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    season_scores.season_label,
+    season_scores.player_name,
+    season_scores.team_name,
+    season_scores.ppg
+FROM (
+    SELECT
+        s.season_id,
+        s.season_label,
+        p.person_id,
+        CONCAT(p.first_name, ' ', p.last_name) AS player_name,
+        t.team_name,
+        ROUND(AVG(pgs.points), 1) AS ppg
+    FROM player_game_stats pgs
+    INNER JOIN games g ON g.game_id = pgs.game_id
+    INNER JOIN seasons s ON s.season_id = g.season_id
+    INNER JOIN people p ON p.person_id = pgs.person_id
+    INNER JOIN roster_assignments ra ON ra.person_id = pgs.person_id AND ra.season_id = s.season_id
+    INNER JOIN teams t ON t.team_id = ra.team_id
+    GROUP BY s.season_id, s.season_label, p.person_id, p.first_name, p.last_name, t.team_name
+) AS season_scores
+INNER JOIN (
+    SELECT
+        g.season_id,
+        MAX(player_ppg.ppg) AS max_ppg
+    FROM (
+        SELECT g.season_id, pgs.person_id, ROUND(AVG(pgs.points), 1) AS ppg
+        FROM player_game_stats pgs
+        INNER JOIN games g ON g.game_id = pgs.game_id
+        GROUP BY g.season_id, pgs.person_id
+    ) AS player_ppg
+    INNER JOIN games g ON g.season_id = player_ppg.season_id
+    GROUP BY g.season_id
+) AS season_max
+    ON season_max.season_id = season_scores.season_id
+   AND season_max.max_ppg = season_scores.ppg
+ORDER BY season_scores.season_id DESC, season_scores.player_name ASC;</code></pre>
+      <p class="q-explain">Three levels of nested subqueries compute per-player season averages, find the per-season max, then join back to name the leader.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>10. Players above their season's scoring average <span class="tag">Subquery &middot; WHERE comparison</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    player_lines.season_label,
+    player_lines.player_name,
+    player_lines.team_name,
+    player_lines.ppg,
+    season_avg.avg_ppg AS season_average
+FROM (
+    SELECT
+        s.season_id,
+        s.season_label,
+        p.person_id,
+        CONCAT(p.first_name, ' ', p.last_name) AS player_name,
+        t.team_name,
+        ROUND(AVG(pgs.points), 1) AS ppg
+    FROM player_game_stats pgs
+    INNER JOIN games g ON g.game_id = pgs.game_id
+    INNER JOIN seasons s ON s.season_id = g.season_id
+    INNER JOIN people p ON p.person_id = pgs.person_id
+    INNER JOIN roster_assignments ra ON ra.person_id = pgs.person_id AND ra.season_id = s.season_id
+    INNER JOIN teams t ON t.team_id = ra.team_id
+    GROUP BY s.season_id, s.season_label, p.person_id, p.first_name, p.last_name, t.team_name
+) AS player_lines
+INNER JOIN (
+    SELECT
+        season_id,
+        ROUND(AVG(ppg), 1) AS avg_ppg
+    FROM (
+        SELECT g.season_id, pgs.person_id, AVG(pgs.points) AS ppg
+        FROM player_game_stats pgs
+        INNER JOIN games g ON g.game_id = pgs.game_id
+        GROUP BY g.season_id, pgs.person_id
+    ) AS per_player
+    GROUP BY season_id
+) AS season_avg
+    ON season_avg.season_id = player_lines.season_id
+WHERE player_lines.ppg &gt; season_avg.avg_ppg
+ORDER BY player_lines.season_id DESC, player_lines.ppg DESC;</code></pre>
+      <p class="q-explain">Compares each player's scoring line against a subquery-derived league average for that same season.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>11. Clubs with repeated playoff qualification <span class="tag">WHERE &middot; HAVING &middot; AVG</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    t.team_name,
+    c.country_name,
+    COUNT(*) AS playoff_seasons,
+    AVG(ts.playoff_seed) AS avg_seed,
+    MAX(ts.final_rank) AS best_finish_rank
+FROM team_seasons ts
+INNER JOIN teams t ON t.team_id = ts.team_id
+INNER JOIN countries c ON c.country_id = t.country_id
+WHERE ts.qualified_playoffs = 1
+GROUP BY t.team_id, t.team_name, c.country_name
+HAVING COUNT(*) &gt;= 4
+ORDER BY playoff_seasons DESC, avg_seed ASC;</code></pre>
+      <p class="q-explain">Filters to playoff seasons first, then surfaces clubs with sustained, repeated qualification.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>12. Coach win/loss records by club <span class="tag">SUM &middot; HAVING</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    CONCAT(p.first_name, ' ', p.last_name) AS coach_name,
+    t.team_name,
+    COUNT(*) AS seasons_coached,
+    SUM(ts.wins) AS total_wins,
+    SUM(ts.losses) AS total_losses,
+    ROUND(SUM(ts.wins) / NULLIF(SUM(ts.wins) + SUM(ts.losses), 0), 3) AS win_pct
+FROM team_seasons ts
+INNER JOIN coaches cch ON cch.person_id = ts.coach_person_id
+INNER JOIN people p ON p.person_id = cch.person_id
+INNER JOIN teams t ON t.team_id = ts.team_id
+GROUP BY cch.person_id, p.first_name, p.last_name, t.team_name
+HAVING COUNT(*) &gt;= 2
+ORDER BY win_pct DESC, total_wins DESC;</code></pre>
+      <p class="q-explain">Aggregates coaching tenure and win percentage per club, guarding division by zero with NULLIF.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>13. Three-point specialists with minimum attempts <span class="tag">Ratio &middot; HAVING</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    s.season_label,
+    CONCAT(p.first_name, ' ', p.last_name) AS player_name,
+    t.team_name,
+    ROUND((SUM(pgs.three_points_made) / NULLIF(SUM(pgs.three_points_attempted), 0)) * 100, 1) AS three_pct,
+    SUM(pgs.three_points_attempted) AS total_attempts
+FROM player_game_stats pgs
+INNER JOIN games g ON g.game_id = pgs.game_id
+INNER JOIN seasons s ON s.season_id = g.season_id
+INNER JOIN people p ON p.person_id = pgs.person_id
+INNER JOIN roster_assignments ra ON ra.person_id = pgs.person_id AND ra.season_id = s.season_id
+INNER JOIN teams t ON t.team_id = ra.team_id
+GROUP BY s.season_id, s.season_label, p.person_id, p.first_name, p.last_name, t.team_name
+HAVING SUM(pgs.three_points_attempted) &gt;= 80
+ORDER BY three_pct DESC, total_attempts DESC;</code></pre>
+      <p class="q-explain">Filters for shooters with both efficiency and enough volume to make the percentage meaningful.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>14. Countries with multiple strong clubs <span class="tag">COUNT DISTINCT &middot; HAVING</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    c.country_name,
+    COUNT(DISTINCT t.team_id) AS clubs,
+    ROUND(AVG(ts.wins), 1) AS avg_wins,
+    ROUND(AVG(ts.wins / NULLIF(ts.wins + ts.losses, 0)), 3) AS avg_win_pct
+FROM countries c
+INNER JOIN teams t ON t.country_id = c.country_id
+INNER JOIN team_seasons ts ON ts.team_id = t.team_id
+GROUP BY c.country_id, c.country_name
+HAVING COUNT(DISTINCT t.team_id) &gt;= 2 AND AVG(ts.wins) &gt;= 12
+ORDER BY avg_win_pct DESC, clubs DESC;</code></pre>
+      <p class="q-explain">Compares basketball strength at the country level using a distinct club count alongside average win totals.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>15. Grid puzzle answer density by season <span class="tag">LEFT JOIN &middot; COUNT DISTINCT tuple</span></summary>
+    <div class="q-body">
+<pre><code>SELECT
+    s.season_label,
+    gp.puzzle_name,
+    COUNT(DISTINCT gpc.row_position, gpc.column_position) AS cells,
+    COUNT(gpa.person_id) AS total_answers,
+    ROUND(COUNT(gpa.person_id) / NULLIF(COUNT(DISTINCT gpc.row_position, gpc.column_position), 0), 1) AS answers_per_cell
+FROM grid_puzzles gp
+INNER JOIN seasons s ON s.season_id = gp.season_id
+INNER JOIN grid_puzzle_cells gpc ON gpc.grid_puzzle_id = gp.grid_puzzle_id
+LEFT JOIN grid_puzzle_answers gpa
+    ON gpa.grid_puzzle_id = gpc.grid_puzzle_id
+   AND gpa.row_position = gpc.row_position
+   AND gpa.column_position = gpc.column_position
+GROUP BY s.season_id, s.season_label, gp.grid_puzzle_id, gp.puzzle_name
+HAVING COUNT(gpa.person_id) &gt;= 5
+ORDER BY s.season_id DESC, answers_per_cell DESC, gp.puzzle_name ASC;</code></pre>
+      <p class="q-explain">Extends the advanced-query set onto the interactive grid puzzle feature, still using multi-table joins, aggregation, LEFT JOIN, and HAVING.</p>
+    </div>
+  </details>
+</section>
+
+<section id="data">
+  <h2>Sample Seed Data</h2>
+  <p class="section-intro">The archive is seeded with ten real EuroLeague seasons (2016-17 through 2025-26), ten clubs, and every person, game, box score, award, and puzzle needed to exercise the schema. Below is one representative <code>INSERT</code> excerpt per table &mdash; all 19 &mdash; grouped the same way as the schema above. The full file (33,000+ lines) lives at <code>exports/euroleague_mysql_import.sql</code> in the repo.</p>
+
+  <details>
+    <summary>People &amp; Roles <span class="tag">people &middot; players &middot; coaches &middot; referees</span></summary>
+    <div class="q-body">
+<pre><code>INSERT INTO `people` (`person_id`, `first_name`, `last_name`, `date_of_birth`, `nationality`, `photo_url`) VALUES
+(1, 'Tomas', 'Satoransky', '1989-03-10', 'Czech Republic', 'portraits/guard.svg'),
+(2, 'Nicolas', 'Laprovittola', '1991-04-11', 'Argentina', 'portraits/guard.svg'),
+(13, 'Kostas', 'Papanikolaou', '1989-05-23', 'Greece', 'portraits/wing.svg'),
+(16, 'Nikola', 'Milutinov', '1995-08-08', 'Serbia', 'portraits/big.svg'),
+(21, 'Nick', 'Calathes', '1995-03-14', 'Greece', 'portraits/guard.svg');
+
+INSERT INTO `players` (`person_id`, `position`, `height`, `weight`) VALUES
+(1, 'PG', 187.00, 82.00),
+(2, 'SG', 194.00, 90.00),
+(3, 'SF', 199.00, 95.00),
+(4, 'G/F', 198.00, 94.00),
+(5, 'PF', 205.00, 99.00);
+
+INSERT INTO `coaches` (`person_id`, `experience_years`, `coaching_role`) VALUES
+(101, 11, 'Head Coach'),
+(102, 12, 'Head Coach'),
+(103, 13, 'Head Coach'),
+(104, 14, 'Head Coach'),
+(105, 15, 'Head Coach');
+
+INSERT INTO `referees` (`person_id`, `license_level`, `active_since`, `federation`, `current_flag`) VALUES
+(201, 'Elite A', '2005-09-01', 'Euroleague Officials Board', 1),
+(202, 'Elite B', '2006-09-01', 'Euroleague Officials Board', 1),
+(203, 'Elite C', '2007-09-01', 'Euroleague Officials Board', 1),
+(204, 'Elite D', '2008-09-01', 'Euroleague Officials Board', 1),
+(205, 'Elite E', '2009-09-01', 'Euroleague Officials Board', 1);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Geography &amp; Venues <span class="tag">countries &middot; arenas</span></summary>
+    <div class="q-body">
+<pre><code>INSERT INTO `countries` (`country_id`, `country_name`, `country_code`, `continent`) VALUES
+(1, 'Spain', 'ESP', 'Europe'),
+(2, 'Greece', 'GRC', 'Europe'),
+(3, 'Turkey', 'TUR', 'Europe'),
+(4, 'Italy', 'ITA', 'Europe'),
+(5, 'France', 'FRA', 'Europe'),
+(6, 'Germany', 'DEU', 'Europe'),
+(7, 'Serbia', 'SRB', 'Europe'),
+(8, 'Lithuania', 'LTU', 'Europe'),
+(9, 'Israel', 'ISR', 'Europe'),
+(10, 'Monaco', 'MCO', 'Europe');
+
+INSERT INTO `arenas` (`arena_id`, `arena_name`, `city`, `capacity`, `website_url`, `country_id`) VALUES
+(1, 'Palau Blaugrana', 'Barcelona', 7585, 'https://www.fcbarcelona.com', 1);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Competition Structure <span class="tag">seasons &middot; teams &middot; team_seasons &middot; roster_assignments</span></summary>
+    <div class="q-body">
+<pre><code>INSERT INTO `seasons` (`season_id`, `season_label`, `start_date`, `end_date`, `competition_name`, `is_completed`) VALUES
+(1, '2016-17', '2016-10-01', '2017-05-31', 'EuroLeague', 1),
+(2, '2017-18', '2017-10-01', '2018-05-31', 'EuroLeague', 1),
+(9, '2024-25', '2024-10-01', '2025-05-31', 'EuroLeague', 1),
+(10, '2025-26', '2025-10-01', '2026-05-31', 'EuroLeague', 0);
+
+INSERT INTO `teams` (`team_id`, `country_id`, `home_arena_id`, `team_name`, `short_name`, `nickname`, `founded_year`, `primary_color`, `secondary_color`, `logo_url`, `website_url`, `is_active`) VALUES
+(1, 1, 1, 'FC Barcelona', 'BAR', 'Blaugrana', 1926, '#A50044', '#004D98', 'club-logos/bar.svg', 'https://www.fcbarcelona.com', 1),
+(2, 2, 2, 'Olympiacos Piraeus', 'OLY', 'Reds', 1931, '#D71920', '#FFFFFF', 'club-logos/oly.svg', 'https://www.olympiacosbc.gr', 1),
+(3, 3, 3, 'Fenerbahce Beko Istanbul', 'FEN', 'Yellow Canaries', 1913, '#0C2340', '#F2C300', 'club-logos/fen.svg', 'https://www.fenerbahce.org', 1);
+
+INSERT INTO `team_seasons` (`team_id`, `season_id`, `coach_person_id`, `wins`, `losses`, `points_for`, `points_against`, `point_diff`, `final_rank`, `playoff_seed`, `qualified_playin`, `qualified_playoffs`, `final_four_flag`, `avg_attendance`, `notes`) VALUES
+(1, 1, 101, 19, 8, 3877, 3309, 568, 3, 3, 0, 1, 1, 5816, 'FC Barcelona secured home-court position with steady two-way play, closing at 19-8 with a +568 point differential.'),
+(2, 1, 102, 24, 3, 4262, 2439, 1823, 1, 1, 0, 1, 1, 10240, 'Olympiacos Piraeus set the pace from opening night and finished clear of the field, closing at 24-3 with a +1823 point differential.');
+
+INSERT INTO `roster_assignments` (`team_id`, `season_id`, `person_id`, `jersey_number`, `role`, `start_date`, `end_date`, `is_active`) VALUES
+(1, 1, 1, 20, 'Lead Guard', '2016-09-01', '2017-05-31', 0),
+(1, 2, 1, 25, 'Lead Guard', '2017-09-01', '2018-05-31', 0),
+(1, 3, 1, 30, 'Lead Guard', '2018-09-01', '2019-05-31', 0);</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Game Data <span class="tag">games &middot; team_game_stats &middot; player_game_stats &middot; awards</span></summary>
+    <div class="q-body">
+<pre><code>INSERT INTO `games` (`game_id`, `season_id`, `home_team_id`, `away_team_id`, `referee_id`, `arena_id`, `game_date`, `tipoff_time`, `status`, `home_score`, `away_score`, `attendance`, `overtime_count`) VALUES
+(6, 1, 1, 9, 204, 1, '2016-10-11', '19:00:00', 'Final', 164, 104, 5689, 0),
+(16, 1, 1, 7, 204, 1, '2016-10-25', '19:00:00', 'Final', 165, 85, 5492, 0),
+(26, 1, 1, 5, 204, 1, '2016-11-08', '19:00:00', 'Final', 165, 106, 5689, 0);
+
+INSERT INTO `team_game_stats` (`game_id`, `team_id`, `points`, `rebounds`, `assists`, `turnovers`, `fouls`, `field_goals_made`, `field_goals_attempted`, `three_points_made`, `three_points_attempted`, `free_throws_made`, `free_throws_attempted`) VALUES
+(1, 1, 135, 35, 37, 21, 37, 46, 87, 23, 44, 20, 28),
+(6, 1, 164, 45, 47, 24, 26, 56, 97, 22, 43, 30, 38);
+
+INSERT INTO `player_game_stats` (`game_id`, `person_id`, `points`, `rebounds`, `assists`, `turnovers`, `fouls`, `field_goals_made`, `field_goals_attempted`, `three_points_made`, `three_points_attempted`, `free_throws_made`, `free_throws_attempted`) VALUES
+(1, 1, 21, 4, 9, 2, 3, 7, 12, 4, 7, 3, 3),
+(6, 1, 21, 4, 10, 2, 2, 7, 12, 3, 6, 4, 4);
+
+INSERT INTO `awards` (`award_id`, `season_id`, `person_id`, `award_name`, `award_type`, `notes`) VALUES
+(29, 3, 1, 'Playmaker Award', 'Player', 'Balanced 9.8 assists per game with a 3.7 assist-to-turnover ratio.'),
+(20, 3, 2, 'MVP', 'Player', 'Averaged 23.4 points, 4.8 assists, and 4.6 rebounds while driving a 17-10 campaign.');</code></pre>
+    </div>
+  </details>
+
+  <details>
+    <summary>Grid Puzzle <span class="tag">grid_puzzles &middot; rows &middot; columns &middot; cells &middot; answers</span></summary>
+    <div class="q-body">
+<pre><code>INSERT INTO `grid_puzzles` (`grid_puzzle_id`, `season_id`, `puzzle_name`, `puzzle_date`, `status`) VALUES
+(1, 10, 'Euroleague Grid 01 · P+A / 3PM / FT%', '2026-03-11', 'published'),
+(2, 10, 'Euroleague Grid 02 · 3PM / FT% / P+R', '2026-03-12', 'published');
+
+INSERT INTO `grid_puzzle_rows` (`grid_puzzle_id`, `row_position`, `team_id`, `clue_text`) VALUES
+(1, 1, 1, 'Choose a BAR player who matches the benchmark.'),
+(1, 2, 2, 'Choose a OLY player who matches the benchmark.'),
+(1, 3, 3, 'Choose a FEN player who matches the benchmark.');
+
+INSERT INTO `grid_puzzle_columns` (`grid_puzzle_id`, `column_position`, `stat_name`, `comparison_operator`, `target_value`, `units`, `clue_text`) VALUES
+(1, 1, 'points_assists', '&gt;=', 21.00, 'P+A', 'Combine for at least 21 points and assists per game'),
+(1, 2, 'three_made_pg', '&gt;=', 1.90, '3PM', 'Make at least 1.9 threes per game'),
+(1, 3, 'ft_pct', '&gt;=', 82.00, 'FT%', 'Shoot at least 82% at the line');
+
+INSERT INTO `grid_puzzle_cells` (`grid_puzzle_id`, `row_position`, `column_position`, `cell_value`, `notes`) VALUES
+(1, 1, 1, NULL, 'Seeded puzzle cell.'),
+(1, 1, 2, NULL, 'Seeded puzzle cell.'),
+(1, 1, 3, NULL, 'Seeded puzzle cell.');
+
+INSERT INTO `grid_puzzle_answers` (`grid_puzzle_id`, `row_position`, `column_position`, `person_id`, `is_primary`, `notes`) VALUES
+(1, 1, 1, 1, 0, 'Alternate seeded answer for P+A.'),
+(1, 1, 2, 1, 0, 'Alternate seeded answer for 3PM.'),
+(1, 1, 3, 1, 1, 'Primary seeded answer for FT%.');</code></pre>
+    </div>
+  </details>
+</section>
+
+<section id="app">
+  <h2>From queries to a working app</h2>
+  <p class="section-intro">All 19 tables are exposed through a browser-accessible CRUD interface, including the composite-key tables. The 15-query pack is browsable and runnable live from an in-app "Advanced Queries" desk, and the public stats pages (standings, leaders, awards) are themselves built on multi-table queries like the ones above.</p>
+  <p class="section-intro">Stack: PHP 8.1+ with <code>mysqli</code>, MySQL/MariaDB, no framework or ORM &mdash; every query on this page is hand-written SQL.</p>
+</section>
+
+</div>
+
+<footer>
+  Dimitris Angelopoulos &middot; <a href="https://github.com/dimitris232989/euroleague" target="_blank" rel="noopener">github.com/dimitris232989/euroleague</a>
+</footer>
+
+</body>
+</html>
