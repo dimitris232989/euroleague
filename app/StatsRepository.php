@@ -141,7 +141,7 @@ final class StatsRepository
     {
         $statement = $this->pdo->prepare(
             'SELECT ts.*, s.season_label,
-                    CONCAT(p.first_name, " ", p.last_name) AS coach_name
+                    CONCAT(p.first_name, \' \', p.last_name) AS coach_name
              FROM team_seasons ts
              JOIN seasons s ON s.season_id = ts.season_id
              LEFT JOIN people p ON p.person_id = ts.coach_person_id
@@ -157,7 +157,7 @@ final class StatsRepository
     {
         $statement = $this->pdo->prepare(
             'SELECT ts.*, s.season_label,
-                    CONCAT(p.first_name, " ", p.last_name) AS coach_name
+                    CONCAT(p.first_name, \' \', p.last_name) AS coach_name
              FROM team_seasons ts
              JOIN seasons s ON s.season_id = ts.season_id
              LEFT JOIN people p ON p.person_id = ts.coach_person_id
@@ -173,7 +173,7 @@ final class StatsRepository
     {
         $statement = $this->pdo->prepare(
             'SELECT ra.person_id, ra.jersey_number, ra.role, ra.is_active,
-                    CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                    CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     pe.nationality, pl.position, pl.height, pl.weight,
                     avg.games_played, avg.ppg, avg.rpg, avg.apg,
                     ROUND(avg.fg_pct, 1) AS fg_pct,
@@ -223,7 +223,7 @@ final class StatsRepository
 
         $currentStatement = $this->pdo->prepare(
             'SELECT ra.person_id,
-                    CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                    CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     previous_assignment.team_id AS previous_team_id,
                     previous_team.team_name AS previous_team_name,
                     COALESCE(avg.ppg, 0) AS ppg
@@ -248,7 +248,7 @@ final class StatsRepository
 
         $previousStatement = $this->pdo->prepare(
             'SELECT ra.person_id,
-                    CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                    CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     current_assignment.team_id AS current_team_id,
                     current_team.team_name AS current_team_name
              FROM roster_assignments ra
@@ -377,7 +377,7 @@ final class StatsRepository
         $statement = $this->pdo->prepare(
             'SELECT *
              FROM (
-                 SELECT pl.person_id, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                 SELECT pl.person_id, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                         pe.nationality, pl.position, pl.height, pl.weight,
                         t.team_id, t.team_name, t.short_name, t.primary_color, t.secondary_color,
                         COALESCE(avg.games_played, 0) AS games_played,
@@ -420,7 +420,7 @@ final class StatsRepository
         $statement = $this->pdo->prepare(
             'SELECT COUNT(*)
              FROM (
-                 SELECT pl.person_id, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                 SELECT pl.person_id, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                         pe.nationality, pl.position,
                         t.team_name
                  FROM players pl
@@ -438,7 +438,7 @@ final class StatsRepository
     public function getPlayerProfile(int $personId): ?array
     {
         $statement = $this->pdo->prepare(
-            'SELECT pl.person_id, pe.first_name, pe.last_name, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+            'SELECT pl.person_id, pe.first_name, pe.last_name, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     pe.date_of_birth, pe.nationality, pe.photo_url,
                     pl.position, pl.height, pl.weight
              FROM players pl
@@ -507,7 +507,7 @@ final class StatsRepository
             'SELECT g.game_id, g.season_id, g.game_date, g.home_score, g.away_score,
                     ht.team_name AS home_team_name, ht.short_name AS home_short_name,
                     at.team_name AS away_team_name, at.short_name AS away_short_name,
-                    CASE WHEN ra.team_id = g.home_team_id THEN CONCAT(at.team_name, " @ ", ht.team_name) ELSE CONCAT(ht.team_name, " vs ", at.team_name) END AS matchup,
+                    CASE WHEN ra.team_id = g.home_team_id THEN CONCAT(at.team_name, \' @ \', ht.team_name) ELSE CONCAT(ht.team_name, \' vs \', at.team_name) END AS matchup,
                     pgs.points, pgs.rebounds, pgs.assists, pgs.turnovers,
                     pgs.field_goals_made, pgs.field_goals_attempted,
                     pgs.three_points_made, pgs.three_points_attempted,
@@ -573,7 +573,7 @@ final class StatsRepository
         $statement = $this->pdo->prepare(
             'SELECT a.award_id, a.award_name, a.award_type, a.notes,
                     s.season_id, s.season_label,
-                    pe.person_id, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                    pe.person_id, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     pe.nationality, pe.photo_url,
                     pl.position,
                     t.team_id, t.team_name, t.short_name, t.logo_url, t.primary_color, t.secondary_color,
@@ -610,7 +610,7 @@ final class StatsRepository
         $statement = $this->pdo->query(
             'SELECT a.award_id, a.award_name, a.award_type, a.notes,
                     s.season_id, s.season_label,
-                    pe.person_id, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                    pe.person_id, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     pe.nationality, pe.photo_url,
                     pl.position,
                     t.team_id, t.team_name, t.short_name, t.logo_url, t.primary_color, t.secondary_color,
@@ -698,7 +698,7 @@ final class StatsRepository
                     ht.team_name AS home_team_name, ht.short_name AS home_short_name, ht.primary_color AS home_primary_color, ht.secondary_color AS home_secondary_color,
                     at.team_name AS away_team_name, at.short_name AS away_short_name, at.primary_color AS away_primary_color, at.secondary_color AS away_secondary_color,
                     a.arena_name, a.city,
-                    CONCAT(p.first_name, " ", p.last_name) AS referee_name
+                    CONCAT(p.first_name, \' \', p.last_name) AS referee_name
              FROM games g
              JOIN seasons s ON s.season_id = g.season_id
              JOIN teams ht ON ht.team_id = g.home_team_id
@@ -726,7 +726,7 @@ final class StatsRepository
         }
 
         $playerStatsStatement = $this->pdo->prepare(
-            'SELECT pgs.*, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+            'SELECT pgs.*, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     pl.position, ra.team_id, t.team_name, t.short_name, t.primary_color, t.secondary_color
              FROM player_game_stats pgs
              JOIN people pe ON pe.person_id = pgs.person_id
@@ -915,7 +915,7 @@ final class StatsRepository
     {
         $statement = $this->pdo->prepare(
             'SELECT pgs.person_id,
-                    CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+                    CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     pgs.points, pgs.rebounds, pgs.assists,
                     g.game_id, g.game_date,
                     t.team_id, t.team_name, t.short_name, t.primary_color, t.secondary_color,
@@ -959,7 +959,7 @@ final class StatsRepository
         }
 
         $statement = $this->pdo->prepare(
-            'SELECT pgs.person_id, CONCAT(pe.first_name, " ", pe.last_name) AS player_name,
+            'SELECT pgs.person_id, CONCAT(pe.first_name, \' \', pe.last_name) AS player_name,
                     t.team_id, t.team_name, t.short_name, t.primary_color, t.secondary_color,
                     COUNT(*) AS games_played,
                     ROUND(AVG(pgs.' . $column . '), 1) AS value

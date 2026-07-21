@@ -45,7 +45,7 @@ final class PuzzleService
         $columns = $columnStatement->fetchAll();
 
         $answerStatement = $this->db->prepare(
-            'SELECT gpa.row_position, gpa.column_position, gpa.person_id, CONCAT(p.first_name, " ", p.last_name) AS player_name
+            'SELECT gpa.row_position, gpa.column_position, gpa.person_id, CONCAT(p.first_name, \' \', p.last_name) AS player_name
              FROM grid_puzzle_answers gpa
              JOIN people p ON p.person_id = gpa.person_id
              WHERE gpa.grid_puzzle_id = ?'
@@ -59,7 +59,7 @@ final class PuzzleService
         $teamPlayerOptions = [];
         foreach ($rows as $row) {
             $statement = $this->db->prepare(
-                'SELECT ra.person_id AS value, CONCAT(p.first_name, " ", p.last_name) AS label
+                'SELECT ra.person_id AS value, CONCAT(p.first_name, \' \', p.last_name) AS label
                  FROM roster_assignments ra
                  JOIN people p ON p.person_id = ra.person_id
                  WHERE ra.team_id = ? AND ra.season_id = ?

@@ -304,14 +304,14 @@ function fillAutomaticPrimaryKey(AppDbConnection $db, string $table, array $sche
 function relationOptions(AppDbConnection $db, string $table): array
 {
     return match ($table) {
-        'countries' => fetchOptions($db, 'SELECT country_id AS value, CONCAT(country_name, " (", country_code, ")") AS label FROM countries ORDER BY country_name'),
-        'arenas' => fetchOptions($db, 'SELECT arena_id AS value, CONCAT(arena_name, " - ", city) AS label FROM arenas ORDER BY arena_name'),
+        'countries' => fetchOptions($db, 'SELECT country_id AS value, CONCAT(country_name, \' (\', country_code, \')\') AS label FROM countries ORDER BY country_name'),
+        'arenas' => fetchOptions($db, 'SELECT arena_id AS value, CONCAT(arena_name, \' - \', city) AS label FROM arenas ORDER BY arena_name'),
         'seasons' => fetchOptions($db, 'SELECT season_id AS value, season_label AS label FROM seasons ORDER BY season_id DESC'),
         'teams' => fetchOptions($db, 'SELECT team_id AS value, team_name AS label FROM teams ORDER BY team_name'),
-        'people' => fetchOptions($db, 'SELECT person_id AS value, CONCAT(first_name, " ", last_name) AS label FROM people ORDER BY last_name, first_name'),
-        'players' => fetchOptions($db, 'SELECT players.person_id AS value, CONCAT(people.first_name, " ", people.last_name) AS label FROM players JOIN people ON people.person_id = players.person_id ORDER BY people.last_name, people.first_name'),
-        'coaches' => fetchOptions($db, 'SELECT coaches.person_id AS value, CONCAT(people.first_name, " ", people.last_name) AS label FROM coaches JOIN people ON people.person_id = coaches.person_id ORDER BY people.last_name, people.first_name'),
-        'referees' => fetchOptions($db, 'SELECT referees.person_id AS value, CONCAT(people.first_name, " ", people.last_name) AS label FROM referees JOIN people ON people.person_id = referees.person_id ORDER BY people.last_name, people.first_name'),
+        'people' => fetchOptions($db, 'SELECT person_id AS value, CONCAT(first_name, \' \', last_name) AS label FROM people ORDER BY last_name, first_name'),
+        'players' => fetchOptions($db, 'SELECT players.person_id AS value, CONCAT(people.first_name, \' \', people.last_name) AS label FROM players JOIN people ON people.person_id = players.person_id ORDER BY people.last_name, people.first_name'),
+        'coaches' => fetchOptions($db, 'SELECT coaches.person_id AS value, CONCAT(people.first_name, \' \', people.last_name) AS label FROM coaches JOIN people ON people.person_id = coaches.person_id ORDER BY people.last_name, people.first_name'),
+        'referees' => fetchOptions($db, 'SELECT referees.person_id AS value, CONCAT(people.first_name, \' \', people.last_name) AS label FROM referees JOIN people ON people.person_id = referees.person_id ORDER BY people.last_name, people.first_name'),
         'grid_puzzles' => fetchOptions($db, 'SELECT grid_puzzle_id AS value, puzzle_name AS label FROM grid_puzzles ORDER BY grid_puzzle_id DESC'),
         default => [],
     };
