@@ -23,6 +23,7 @@ final class Database
             $this->config['password'],
             $this->config['database'],
             $this->config['port'],
+            $this->config['ssl'] ?? false,
         );
 
         return $this->connection;
@@ -150,6 +151,7 @@ final class Database
             $this->config['password'],
             null,
             $this->config['port'],
+            $this->config['ssl'] ?? false,
         );
     }
 

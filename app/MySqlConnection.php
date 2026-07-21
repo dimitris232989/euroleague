@@ -15,6 +15,7 @@ final class AppDbConnection
         string $password,
         ?string $database = null,
         int $port = 3306,
+        bool $ssl = false,
     ): self {
         if (!extension_loaded('mysqli')) {
             throw new RuntimeException('The mysqli extension is not enabled in PHP.');
@@ -24,7 +25,14 @@ final class AppDbConnection
 
         $connection = mysqli_init();
         $connection->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
-        $connection->real_connect($host, $username, $password, $database, $port);
+
+        $flags = 0;
+        if ($ssl) {
+            $connection->ssl_set(null, null, null, null, null);
+            $flags = MYSQLI_CLIENT_SSL;
+        }
+
+        $connection->real_connect($host, $username, $password, $database, $port, null, $flags);
         $connection->set_charset('utf8mb4');
 
         return new self('mysql', $connection);

@@ -40,18 +40,26 @@ function parseDatabaseUrl(?string $url): array
 
     $databaseName = isset($parts['path']) ? ltrim(rawurldecode((string) $parts['path']), '/') : null;
 
+    $query = [];
+    if (isset($parts['query'])) {
+        parse_str((string) $parts['query'], $query);
+    }
+    $sslMode = isset($query['ssl-mode']) ? strtoupper((string) $query['ssl-mode']) : null;
+
     return [
         'host' => $parts['host'] ?? null,
         'port' => $parts['port'] ?? null,
         'database' => $databaseName !== '' ? $databaseName : null,
         'username' => isset($parts['user']) ? rawurldecode((string) $parts['user']) : null,
         'password' => isset($parts['pass']) ? rawurldecode((string) $parts['pass']) : null,
+        'ssl' => $sslMode !== null && $sslMode !== 'DISABLED',
     ];
 }
 
 function appDatabaseConfig(): array
 {
     $urlConfig = parseDatabaseUrl(appEnv('EUROLEAGUE_DB_URL', 'MYSQL_URL', 'DATABASE_URL'));
+    $sslEnv = appEnv('EUROLEAGUE_DB_SSL', 'MYSQL_SSL');
 
     return [
         'host' => appEnv('EUROLEAGUE_DB_HOST', 'MYSQLHOST', 'DB_HOST') ?? ($urlConfig['host'] ?? '127.0.0.1'),
@@ -59,6 +67,7 @@ function appDatabaseConfig(): array
         'database' => appEnv('EUROLEAGUE_DB_NAME', 'MYSQLDATABASE', 'DB_DATABASE') ?? ($urlConfig['database'] ?? 'euroleague'),
         'username' => appEnv('EUROLEAGUE_DB_USER', 'MYSQLUSER', 'DB_USERNAME') ?? ($urlConfig['username'] ?? 'root'),
         'password' => appEnv('EUROLEAGUE_DB_PASS', 'MYSQLPASSWORD', 'DB_PASSWORD') ?? ($urlConfig['password'] ?? ''),
+        'ssl' => $sslEnv !== null ? filter_var($sslEnv, FILTER_VALIDATE_BOOLEAN) : ($urlConfig['ssl'] ?? false),
     ];
 }
 
