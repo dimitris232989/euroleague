@@ -1020,7 +1020,7 @@ final class StatsRepository
         $clauses = [];
         $params = [];
         foreach ($columns as $column) {
-            $clauses[] = 'LOWER(COALESCE(' . $column . ', "")) LIKE ?';
+            $clauses[] = 'LOWER(COALESCE(' . $column . ', \'\')) LIKE ?';
             $params[] = '%' . strtolower($term) . '%';
         }
 
