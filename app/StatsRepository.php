@@ -325,7 +325,7 @@ final class StatsRepository
                     CASE WHEN g.home_team_id = ? THEN g.away_score ELSE g.home_score END AS opponent_score,
                     CASE WHEN g.home_team_id = ? THEN at.team_name ELSE ht.team_name END AS opponent_name,
                     CASE WHEN g.home_team_id = ? THEN at.short_name ELSE ht.short_name END AS opponent_short_name,
-                    CASE WHEN g.home_team_id = ? THEN "Home" ELSE "Away" END AS venue
+                    CASE WHEN g.home_team_id = ? THEN \'Home\' ELSE \'Away\' END AS venue
              FROM games g
              JOIN seasons s ON s.season_id = g.season_id
              JOIN teams ht ON ht.team_id = g.home_team_id
@@ -776,7 +776,7 @@ final class StatsRepository
                     a.arena_name,
                     CASE WHEN g.home_team_id = ? THEN g.home_score ELSE g.away_score END AS team_score,
                     CASE WHEN g.home_team_id = ? THEN g.away_score ELSE g.home_score END AS opponent_score,
-                    CASE WHEN g.home_team_id = ? THEN "Home" ELSE "Away" END AS venue
+                    CASE WHEN g.home_team_id = ? THEN \'Home\' ELSE \'Away\' END AS venue
              FROM games g
              JOIN seasons s ON s.season_id = g.season_id
              JOIN teams ht ON ht.team_id = g.home_team_id

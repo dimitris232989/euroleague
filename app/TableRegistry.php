@@ -36,7 +36,7 @@ function inspectTable(AppDbConnection $db, string $table): array
                 'SELECT c.ORDINAL_POSITION - 1 AS cid,
                                 c.COLUMN_NAME AS name,
                                 c.COLUMN_TYPE AS type,
-                                CASE WHEN c.IS_NULLABLE = "NO" THEN 1 ELSE 0 END AS notnull,
+                                CASE WHEN c.IS_NULLABLE = \'NO\' THEN 1 ELSE 0 END AS notnull,
                                 c.COLUMN_DEFAULT AS dflt_value,
                                 COALESCE(pk.ORDINAL_POSITION, 0) AS pk
                  FROM information_schema.columns c
@@ -44,7 +44,7 @@ function inspectTable(AppDbConnection $db, string $table): array
                         ON pk.table_schema = c.table_schema
                      AND pk.table_name = c.table_name
                      AND pk.column_name = c.column_name
-                     AND pk.constraint_name = "PRIMARY"
+                     AND pk.constraint_name = \'PRIMARY\'
                  WHERE c.table_schema = DATABASE() AND c.table_name = ?
                  ORDER BY c.ORDINAL_POSITION'
         )->execute([$table])->fetchAll();
@@ -57,7 +57,7 @@ function inspectTable(AppDbConnection $db, string $table): array
                                 k.referenced_column_name AS `to`,
                                 rc.UPDATE_RULE AS on_update,
                                 rc.DELETE_RULE AS on_delete,
-                                "NONE" AS `match`
+                                \'NONE\' AS `match`
                  FROM information_schema.key_column_usage k
                  JOIN information_schema.referential_constraints rc
                         ON rc.constraint_schema = k.table_schema
