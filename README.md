@@ -1,5 +1,7 @@
 # euroleague
 
+**Live demo:** [euroleague-eu.onrender.com](https://euroleague-eu.onrender.com/) (free-tier hosting — the first load after a period of inactivity may take a few seconds to wake up)
+
 PHP Euroleague archive with:
 
 - MySQL plus `mysqli` runtime support for assignment submission
@@ -116,9 +118,11 @@ The repository now includes a `Dockerfile` that serves the `public/` folder dire
 - `MYSQLPASSWORD`
 - `MYSQL_URL`
 
-### Recommended option: Railway + MySQL
+If the connection string (`MYSQL_URL`, `EUROLEAGUE_DB_URL`, or `DATABASE_URL`) includes `ssl-mode=REQUIRED` (or any value other than `DISABLED`) in its query string, the app automatically connects over SSL — needed for managed providers such as Aiven that require an encrypted connection. This can also be forced explicitly with `EUROLEAGUE_DB_SSL=true` (or `MYSQL_SSL=true`) regardless of the connection string.
 
-Railway is the simplest fit for this codebase because it can host both the PHP container and a MySQL service in one project.
+### Option A: Railway + MySQL (paid)
+
+Railway is the simplest fit for this codebase because it can host both the PHP container and a MySQL service in one project. As of 2026, Railway's free trial is time-limited; continued use requires their Hobby plan (~$5/month).
 
 1. Push this repository to GitHub.
 2. Create a new Railway project.
@@ -147,9 +151,39 @@ MYSQLPASSWORD=${{MySQL.MYSQLPASSWORD}}
 
 On the first request, the app checks whether the target database already contains the archive tables. If the database is empty, it imports `exports/euroleague_mysql_import.sql` automatically. After that, the hosted MySQL database persists your data across restarts and redeploys.
 
+### Option B: Render + Aiven (free)
+
+This is what the live demo above actually runs on: a free Render web service plus a free Aiven MySQL database, with no credit card required for either.
+
+1. **Create the database.** Sign up at [aiven.io](https://aiven.io), create a new **MySQL** service on the **Free** plan. Once it finishes provisioning, copy its **Service URI** (shown under the service's Overview / "Connect with" section) — it looks like:
+
+   ```text
+   mysql://avnadmin:PASSWORD@HOST:PORT/defaultdb?ssl-mode=REQUIRED
+   ```
+
+2. **Create the web service.** Sign up at [render.com](https://render.com), click **New +** → **Web Service**, and connect this GitHub repository. Render auto-detects the `Dockerfile`. Choose the **Free** instance type.
+
+3. **Set one environment variable** on the Render service:
+
+   ```text
+   MYSQL_URL = <the Aiven Service URI from step 1>
+   ```
+
+   The `ssl-mode=REQUIRED` in that URL is enough for the app to enable SSL automatically (see above) — no other configuration needed.
+
+4. Deploy. On first load, the app creates the schema and imports the seed data into the Aiven database automatically, same as any other target.
+
+**Region matters.** Render and Aiven are separate providers, so pick regions close to each other (e.g., Render's Frankfurt region next to an Aiven EU region). Every page here runs several database queries, so a cross-continent round trip (e.g., US East ↔ EU) on each one adds up to very noticeable page load times, even though the app itself works fine.
+
+**Free tier spin-down.** Render's free web services spin down after ~15 minutes of no traffic and take 30-50 seconds to wake back up on the next visit — and requests that land mid-wake-up can occasionally 404 on static assets (CSS/images) before the container has fully finished starting. A free uptime monitor (e.g., [UptimeRobot](https://uptimerobot.com), pinging every 5 minutes) keeps the service warm and avoids this for a link you're sharing publicly.
+
 ### Important deployment note
 
 Managed MySQL providers often do not allow `CREATE DATABASE` or `DROP DATABASE` for the application user. The app now handles that correctly by seeding inside the configured database instead of requiring database-level admin access. The configured database should still exist before the first deployment.
+
+### SQL compatibility note
+
+All SQL string literals in this codebase use single quotes (`'like this'`), never double quotes. Some managed MySQL providers (Aiven among them) default to a `sql_mode` that includes `ANSI_QUOTES`, under which double-quoted strings are parsed as identifiers rather than literals — `CONCAT(a, " ", b)` would look for a column named `" "` instead of inserting a space. Single-quoted literals work correctly under both the default and ANSI SQL modes, so keep using them in any new queries.
 
 ## Assignment helpers
 

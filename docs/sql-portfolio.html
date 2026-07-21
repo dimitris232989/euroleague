@@ -64,6 +64,10 @@
     color: var(--text);
   }
   .links a:hover { border-color: var(--accent); color: var(--accent); }
+  .links a.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .links a.primary:hover { background: var(--accent); color: #fff; opacity: 0.9; }
+  .text-link-inline { color: var(--accent); font-weight: 600; text-decoration: none; }
+  .text-link-inline:hover { text-decoration: underline; }
   .stats { display: flex; gap: 28px; margin-top: 32px; flex-wrap: wrap; }
   .stat .n { font-size: 1.6rem; font-weight: 600; }
   .stat .l { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
@@ -142,6 +146,7 @@
     <p class="role">SQL &amp; Relational Database Design &mdash; SQL Portfolio</p>
     <p class="lede">This page is the SQL deep-dive behind <strong>Euroleague Atlas</strong>, a PHP/MySQL sports archive I built end-to-end: a normalized 19-table schema, ten seasons of seeded data, and 15 advanced queries covering joins, subqueries, aggregation, and HAVING logic.</p>
     <div class="links">
+      <a class="primary" href="https://euroleague-eu.onrender.com/" target="_blank" rel="noopener">Check the web application here! &#8594;</a>
       <a href="https://github.com/dimitris232989/euroleague" target="_blank" rel="noopener">GitHub Repository</a>
       <a href="#schema">Schema</a>
       <a href="#queries">15 Queries</a>
@@ -984,6 +989,7 @@ INSERT INTO `grid_puzzle_answers` (`grid_puzzle_id`, `row_position`, `column_pos
   <h2>From queries to a working app</h2>
   <p class="section-intro">All 19 tables are exposed through a browser-accessible CRUD interface, including the composite-key tables. The 15-query pack is browsable and runnable live from an in-app "Advanced Queries" desk, and the public stats pages (standings, leaders, awards) are themselves built on multi-table queries like the ones above.</p>
   <p class="section-intro">Stack: PHP 8.1+ with <code>mysqli</code>, MySQL/MariaDB, no framework or ORM &mdash; every query on this page is hand-written SQL.</p>
+  <p class="section-intro"><a class="text-link-inline" href="https://euroleague-eu.onrender.com/" target="_blank" rel="noopener">&#8594; Check the web application here!</a> (free-tier hosting &mdash; the first load after a period of inactivity may take a few seconds to wake up)</p>
 </section>
 
 </div>
